@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">噗浪姬</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="PLURK_REQUEST_URL">http://www.plurk.com/OAuth/request_token</string>
+    <string name="PLURK_AUTHORIZATION_URL">http://www.plurk.com/m/authorize</string>
+    <string name="PLURK_ACCESS_URL">http://www.plurk.com/OAuth/access_token</string>
+    <string name="PLURK_CALLBACK_URL">myplurk:///</string>
+    <string name="PLURK_CONSUMER_KEY">a</string>
+    <string name="PLURK_CONSUMER_SECRET ">b</string>
+
+</resources>
