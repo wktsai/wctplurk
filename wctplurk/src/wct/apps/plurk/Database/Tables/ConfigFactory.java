@@ -9,9 +9,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+/**
+ * 
+ * @author WCT
+ *
+ */
 public final class ConfigFactory implements IFactory
 {
-	/* Private variable defined. */
+	// Private variable defined.
 	private Context _context = null;
 	private ArrayList<Config> list = null;
 	private String _Token = null;
@@ -19,24 +24,45 @@ public final class ConfigFactory implements IFactory
 	private String _DeviceID = null;
 	private DBHelper _db = null;
 	
-	/* Public variable defined. */
+	// Public variable defined.
+	/**
+	 * Get the table name.
+	 */
 	public static final String TableName = "Config";
+	/**
+	 * create table with CREATE statement.
+	 */
 	public static final String CreateSQL = 
 			  "CREATE TABLE IF NOT EXISTS " + TableName + " ("
 			+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
 			+ "Name TEXT,"
 			+ "Value TEXT"
 			+ ");";
+	/**
+	 * remove table with the DROP statement.
+	 */
 	public static final String DropSQL = "DROP TABLE IF EXISTS " + TableName + ";";
+	/**
+	 * column names from the table.
+	 */
 	public final String[] Columns = new String[] {"_id", "Name", "Value"};
 	
-	/* Class Constructor */	
+	// Class Constructor
+	/**
+	 * Constructor
+	 * @param context
+	 */
 	public ConfigFactory(Context context)
 	{
 		this._context = context;
 		this._db = new DBHelper(context, this);
 	}
 	
+	/**
+	 * Constructor
+	 * @param context
+	 * @param db
+	 */
 	public ConfigFactory(Context context, DBHelper db)
 	{
 		this._context = context;
@@ -46,19 +72,35 @@ public final class ConfigFactory implements IFactory
 			this._db = db;
 	}
 
-	/* Class private function*/
+	// Class private function
 	
-	/* Class public function*/
+	// Class public function
+	/**
+	 * Get Instance of this class
+	 * @param context
+	 * @return
+	 */
 	public static ConfigFactory getInstance(Context context)
 	{
 		return new ConfigFactory(context);
 	}
 	
+	/**
+	 * Get Instance of this class
+	 * @param context
+	 * @param db
+	 * @return
+	 */
 	public static ConfigFactory getInstance(Context context, DBHelper db)
 	{
 		return new ConfigFactory(context, db);
 	}
 	
+	/**
+	 * update data.
+	 * @param name
+	 * @param value
+	 */
 	public void update(String name, String value)
 	{
 		Log.i("ConfigFactory.update", "name="+name);
@@ -66,10 +108,15 @@ public final class ConfigFactory implements IFactory
 		SQLiteDatabase dbw = _db.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put("Value", value);
-		long rtn = dbw.update(TableName, values, "Name=?", new String[]{name});
+		dbw.update(TableName, values, "Name=?", new String[]{name});
 		dbw.close();
 	}
 	
+	/**
+	 * insert data.
+	 * @param name
+	 * @param value
+	 */
 	public void insert(String name, String value)
 	{
 		Log.i("ConfigFactory.insert", "name="+name);
@@ -78,7 +125,7 @@ public final class ConfigFactory implements IFactory
 		ContentValues values = new ContentValues();
 		values.put("Name", name);
 		values.put("Value", value);
-		long rtn = dbw.insert(TableName, null, values);
+		dbw.insert(TableName, null, values);
 		dbw.close();
 	}
 	
@@ -104,17 +151,14 @@ public final class ConfigFactory implements IFactory
 			
 			if(c.Name.equals("Token"))
 			{
-				Log.i("ConfigFactory.ReloadDataFromDB", "Expr is Token, and value="+c.Value);
 				_Token = c.Value;
 			}
 			else if(c.Name.equals("TokenSecret"))
 			{
-				Log.i("ConfigFactory.ReloadDataFromDB", "Expr is TokenSecret, and value="+c.Value);
 				_TokenSecret = c.Value;
 			}
 			else if(c.Name.equals("DeviceID"))
 			{
-				Log.i("ConfigFactory.ReloadDataFromDB", "Expr is DeviceID, and value="+c.Value);
 				_DeviceID = c.Value;
 			}
 		}
@@ -158,7 +202,6 @@ public final class ConfigFactory implements IFactory
 	
 	/** Use this function to set consumer key.
 	 * 
-	 * @author WCT
 	 * @param value string
 	 */
 	public void setToken(String value)
@@ -170,7 +213,7 @@ public final class ConfigFactory implements IFactory
 		
 		if(_Token != null)
 		{
-			if(_Token.equals(value))
+			if(!_Token.equals(value))
 				update("Token", value);
 		}
 		else
@@ -179,7 +222,6 @@ public final class ConfigFactory implements IFactory
 	
 	/** Use this function to set consumer secret.
 	 * 
-	 * @author WCT
 	 * @param value string
 	 */	
 	public void setTokenSecret(String value)
@@ -188,7 +230,7 @@ public final class ConfigFactory implements IFactory
 			ReloadDataFromDB();
 		if(_TokenSecret != null)
 		{
-			if(_TokenSecret.equals(value))
+			if(!_TokenSecret.equals(value))
 				update("TokenSecret", value);
 		}
 		else
@@ -197,7 +239,6 @@ public final class ConfigFactory implements IFactory
 	
 	/** Use this function to set Device ID.
 	 * 
-	 * @author WCT
 	 * @param value string
 	 */	
 	public void setDeviceID(String value)
@@ -213,6 +254,9 @@ public final class ConfigFactory implements IFactory
 			insert("DeviceID", value);
 	}
 	
+	/**
+	 * Get all data from table.
+	 */
 	public ArrayList<Config> getAllData()
 	{
 		if(list == null)
@@ -220,6 +264,9 @@ public final class ConfigFactory implements IFactory
 		return list;
 	}
 	
+	/**
+	 * Create Table
+	 */
 	public void Create()
 	{
 		DBHelper db = new DBHelper(_context);
@@ -229,6 +276,9 @@ public final class ConfigFactory implements IFactory
 		db.close();
 	}
 	
+	/**
+	 * Drop Table
+	 */
 	public void Drop()
 	{
 		DBHelper db = new DBHelper(_context);

@@ -1,67 +1,90 @@
 package wct.apps.plurk;
 
 import wct.apps.plurk.Database.DBHelper;
-import android.content.Intent;
-import android.os.Bundle;
+import wct.apps.plurk.OAuth.Plurk;
+import wct.apps.plurk.OAuth.Plurk.OnRequestListener;
 import android.app.Activity;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.TextView;
-//import android.widget.Button;
 
-public class MainActivity extends Activity implements OnClickListener {
-
-	private DBHelper _db = null;
+public class MainActivity extends Activity {
+	private DBHelper _dbHelper = null;
+	private Plurk _plurk = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		Log.d("MainActivity", "onCreate");
 		
-		openDB();
+		_dbHelper = new DBHelper(this);
+		_plurk = Plurk.getInstance();
 		
-		String tmp = _db.getConfigFactory().getToken();
-		if(tmp == null)
-			Log.i("MainActivity.onCreate", "Token is null");
-		else
-			Log.i("MainActivity.onCreate", "Token = " + _db.getConfigFactory().getToken());
+		Log.i("Plurk", _plurk.getToken());
+		Log.i("Plurk", _plurk.getSecret());
 		
-		_db.getConfigFactory().setToken("test11");
-		
-		tmp = _db.getConfigFactory().getToken();
-		if(tmp == null)
-			Log.i("MainActivity.onCreate", "Token is null");
-		else
-			Log.i("MainActivity.onCreate", "Token = " + _db.getConfigFactory().getToken());
-		
-		/*
-		ConfigValue.setContext(this);
-			
-		openDB();
-		ConfigValue.setToken("tset1");
-		ConfigValue.setTokenSecret("tset2");
-		ConfigValue.setDeviceID("tset3");
-		
-		Log.i("MainActivity.onCreate", ConfigValue.getToken());
-		Log.i("MainActivity.onCreate", ConfigValue.getTokenSecret());
-		Log.i("MainActivity.onCreate", ConfigValue.getDeviceID());
-		*/
-		
-		/*
-		if(!AuthUser())
-		{
-			Intent intent = new Intent();
-			intent.setClass(MainActivity.this, LoginActivity.class);
-			startActivity(intent);
-			MainActivity.this.finish();
-		}
-		*/
-		
-		
-	}
+		(new AsyncTask<Void, Void, Void>() {
 
+			@Override
+			protected Void doInBackground(Void... params) {
+				// TODO Auto-generated method stub
+				
+
+				_plurk.request("Profile/getOwnProfile", null, new OnRequestListener(){
+
+					@Override
+					public void onComplete(String response) {
+						// TODO Auto-generated method stub
+						if (response == null || response.length() <= 0){
+						}
+						else
+						{
+							Log.d("MainActivity.onCreate.AsyncTask", response);
+						}
+					}
+
+					@Override
+					public void onError() {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				
+				return null;
+			}
+			
+		}).execute();
+		
+		/*
+		String Token = _dbHelper.getConfigFactory().getToken();
+		String TokenSecret = _dbHelper.getConfigFactory().getTokenSecret();
+		
+		_plurk = new Plurk();
+		if(Token != null && Token != "" && TokenSecret != null && TokenSecret != "")
+			_plurk.setTokenAndSecret(Token, TokenSecret);
+		_plurk.authorize(this, new OnAuthorizeListener() {
+			@Override
+			public void onAuthorized() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onError(String error) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onComplete(Bundle values) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		*/
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -71,40 +94,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	
 	@Override
 	protected void onDestroy() {
+		_dbHelper.close();
 		super.onDestroy();
-		closeDB();
-	}
-	
-	private void openDB() {
-		_db = DBHelper.getInstance(this);
-	}
-	
-	private void closeDB() {
-		_db.close();
-	}
-	
-	private boolean AuthUser() {
-		
-		return false;
-	}
-	
-	@Override
-	public void onClick(View v)
-	{
-		TextView t =(TextView)findViewById(R.id.textView1);
-		t.setText(_db.getConfigFactory().getToken());
-		/*
-		Log.i("MainActivity.onClick", ConfigValue.getToken());
-		Log.i("MainActivity.onClick", ConfigValue.getTokenSecret());
-		Log.i("MainActivity.onClick", ConfigValue.getDeviceID());
-		
-		ConfigValue.setToken("tset4");
-		ConfigValue.setTokenSecret("tset5");
-		ConfigValue.setDeviceID("tset6");
-		
-		Log.i("MainActivity.onClick", ConfigValue.getToken());
-		Log.i("MainActivity.onClick", ConfigValue.getTokenSecret());
-		Log.i("MainActivity.onClick", ConfigValue.getDeviceID());
-		*/
 	}
 }
