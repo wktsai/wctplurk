@@ -10,5 +10,7 @@
     <string name="PLURK_CALLBACK_URL">myplurk:///</string>
     <string name="PLURK_CONSUMER_KEY">a</string>
     <string name="PLURK_CONSUMER_SECRET ">b</string>
+    <string name="IntroduceSelf">關於自己</string>
+    <string name="FriendList">好友列表</string>
 
 </resources>

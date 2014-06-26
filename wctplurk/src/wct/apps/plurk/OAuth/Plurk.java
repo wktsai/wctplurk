@@ -181,7 +181,6 @@ public class Plurk {
 	        _consumer.sign(request);
 	        // send the request
 	        content = client.execute(request, new BasicResponseHandler());
-			Log.d("TAG",content);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -255,7 +254,6 @@ public class Plurk {
 
 		protected String doInBackground(String... urls) {
 			String obj = request(API, list);
-			Log.d("TAG", obj);
 			return obj;
 		}
 

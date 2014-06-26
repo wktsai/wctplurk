@@ -68,10 +68,10 @@ public class PlurkAuthActivity extends Activity {
         		Log.d("TAG", "url = " + url);
         		
         		if (url.contains(Plurk.CALLBACK_URL)){
-        			(new AsyncTask<String, Void, Long>() {
+        			(new AsyncTask<String, Void, Void>() {
 
 						@Override
-						protected Long doInBackground(String... params) {
+						protected Void doInBackground(String... params) {
 							// TODO Auto-generated method stub
 							if(params.length > 0)
 							{
@@ -87,7 +87,7 @@ public class PlurkAuthActivity extends Activity {
 			        			startActivity(intent);
 			        			PlurkAuthActivity.this.finish();
 							}
-							return (long) 0;
+							return null;
 						}
         				
         			}).execute(url);

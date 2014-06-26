@@ -1,29 +1,51 @@
 package wct.apps.plurk;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import wct.apps.plurk.Database.DBHelper;
 import wct.apps.plurk.OAuth.Plurk;
 import wct.apps.plurk.OAuth.Plurk.OnRequestListener;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TabHost;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 	private DBHelper _dbHelper = null;
 	private Plurk _plurk = null;
+	private int tabIndex = 0; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d("MainActivity", "onCreate");
 		
+		setContentView(R.layout.activity_main);
+		
+		TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
+		tabHost.setup();
+		tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("tab1").setContent(R.id.tab1));
+		tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("tab2").setContent(R.id.tab2));
+		
+		//tabHost.getTabWidget().getTabCount()
+		
 		_dbHelper = new DBHelper(this);
 		_plurk = Plurk.getInstance();
 		
 		Log.i("Plurk", _plurk.getToken());
 		Log.i("Plurk", _plurk.getSecret());
-		
+				
 		(new AsyncTask<Void, Void, Void>() {
 
 			@Override
@@ -55,34 +77,6 @@ public class MainActivity extends Activity {
 			}
 			
 		}).execute();
-		
-		/*
-		String Token = _dbHelper.getConfigFactory().getToken();
-		String TokenSecret = _dbHelper.getConfigFactory().getTokenSecret();
-		
-		_plurk = new Plurk();
-		if(Token != null && Token != "" && TokenSecret != null && TokenSecret != "")
-			_plurk.setTokenAndSecret(Token, TokenSecret);
-		_plurk.authorize(this, new OnAuthorizeListener() {
-			@Override
-			public void onAuthorized() {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onError(String error) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onComplete(Bundle values) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		*/
 	}
 	
 	@Override
@@ -96,5 +90,31 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 		_dbHelper.close();
 		super.onDestroy();
+	}
+	
+	@SuppressWarnings("deprecation")
+	private GestureDetector detector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			return super.onFling(e1, e2, velocityX, velocityY);
+		}
+	});
+	
+	protected void showNext() {
+		TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
+		if(tabIndex + 1 >= tabHost.getTabWidget().getTabCount())
+			tabIndex++;
+		else
+			tabIndex = 0;
+		tabHost.setCurrentTab(tabIndex);
+	}
+	
+	protected void showPre() {
+		TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
+		if(tabIndex == 0)
+			tabIndex = tabHost.getTabWidget().getTabCount() - 1;
+		else
+			tabIndex--;
+		tabHost.setCurrentTab(tabIndex);
 	}
 }
