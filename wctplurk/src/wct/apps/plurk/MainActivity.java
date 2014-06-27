@@ -1,25 +1,16 @@
 package wct.apps.plurk;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import wct.apps.plurk.Database.DBHelper;
 import wct.apps.plurk.OAuth.Plurk;
 import wct.apps.plurk.OAuth.Plurk.OnRequestListener;
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 
 public class MainActivity extends FragmentActivity {
 	private DBHelper _dbHelper = null;
@@ -37,6 +28,18 @@ public class MainActivity extends FragmentActivity {
 		tabHost.setup();
 		tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("tab1").setContent(R.id.tab1));
 		tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("tab2").setContent(R.id.tab2));
+		
+		DisplayMetrics dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		int screenWidth = dm.widthPixels;
+		
+		TabWidget tabWidget = tabHost.getTabWidget();
+		int count = tabWidget.getChildCount();
+		if (count > 3) {
+			for (int i = 0; i < count; i++) {
+				tabWidget.getChildTabViewAt(i).setMinimumWidth((screenWidth)/3);
+			}
+		}
 		
 		//tabHost.getTabWidget().getTabCount()
 		
@@ -91,14 +94,6 @@ public class MainActivity extends FragmentActivity {
 		_dbHelper.close();
 		super.onDestroy();
 	}
-	
-	@SuppressWarnings("deprecation")
-	private GestureDetector detector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-			return super.onFling(e1, e2, velocityX, velocityY);
-		}
-	});
 	
 	protected void showNext() {
 		TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
