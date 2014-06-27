@@ -26,8 +26,8 @@ public class MainActivity extends FragmentActivity {
 		
 		TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
 		tabHost.setup();
-		tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("tab1").setContent(R.id.tab1));
-		tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("tab2").setContent(R.id.tab2));
+		tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator(getString(R.string.TabProfile)).setContent(R.id.tab1));
+		tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator(getString(R.string.TabFriendList)).setContent(R.id.tab2));
 		
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
